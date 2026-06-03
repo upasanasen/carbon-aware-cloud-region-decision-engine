@@ -21,7 +21,7 @@ DATA_PATH = ROOT / "data" / "regions.csv"
 # DEFAULTS
 # --------------------------
 DEFAULT_PUE = 1.15
-DEFAULT_CARBON_PRICE = 100.0  # €/tCO2e
+DEFAULT_CARBON_PRICE = 100.0  # Internal shadow carbon price in €/tCO2e
 
 WORKLOAD_PRESETS = {
     "Small App / API": 150.0,
@@ -118,6 +118,10 @@ filtered_df = df.copy()
 if provider_filter != "All":
     filtered_df = filtered_df[filtered_df["provider"] == provider_filter]
 
+if filtered_df.empty:
+    st.error("No regions available for the selected provider.")
+    st.stop()
+    
 # Compute emissions
 result = compute(filtered_df, kwh_month, pue, carbon_price)
 
@@ -146,7 +150,7 @@ st.divider()
 
 st.subheader("Carbon Price Scenario Impact")
 
-scenario_result = compute(df, kwh_month, pue, scenario_carbon_price)
+scenario_result = compute(filtered_df, kwh_month, pue, scenario_carbon_price)
 
 scenario_best = scenario_result.iloc[0]
 scenario_worst = scenario_result.iloc[-1]
@@ -159,17 +163,17 @@ scenario_cost_difference = scenario_cost_worst - scenario_cost_best
 c4, c5, c6 = st.columns(3)
 
 c4.metric(
-    "Scenario Price",
+    "Scenario Shadow Price",
     f"€{scenario_carbon_price:.0f}/tCO₂e"
 )
 
 c5.metric(
-    "Best Region Carbon Cost",
+    "Lowest-Emission Region Shadow Cost",
     f"€{scenario_cost_best:,.0f}"
 )
 
 c6.metric(
-    "Avoided Cost Under Scenario",
+    "Avoided Shadow Cost Under Scenario",
     f"€{scenario_cost_difference:,.0f}"
 )
 
