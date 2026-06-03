@@ -69,3 +69,36 @@ Estimated annual emissions are calculated using:
 
 ```text
 Annual tCO₂e = (Monthly kWh × 12 × PUE × grid intensity gCO₂e/kWh) ÷ 1,000,000
+
+```
+
+Where:
+
+- Monthly kWh = estimated monthly workload electricity use
+- PUE = Power Usage Effectiveness, used to account for data center infrastructure energy
+- Grid intensity = country-level electricity emissions intensity
+- The result is expressed in tonnes of CO₂e per year
+
+This prototype estimates Scope 2 location-based operational emissions. It does not estimate provider-specific market-based emissions claims, Scope 1 backup generator emissions, or Scope 3 embodied emissions from servers and data center construction.
+
+---
+
+## Data Sources
+
+- European Environment Agency electricity generation greenhouse gas intensity data
+- Cloud region-country mapping for AWS, Azure, and Google Cloud European regions
+- Region data stored in `data/regions.csv`
+
+---
+
+## Repo Structure
+
+```text
+.
+├── app/
+│   └── app.py
+├── data/
+│   └── regions.csv
+├── docs/
+├── requirements.txt
+└── README.md
