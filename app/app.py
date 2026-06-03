@@ -58,7 +58,22 @@ def compute(df: pd.DataFrame, kwh_month: float, pue: float, carbon_price: float)
     out = out.sort_values("annual_tco2e", ascending=True).reset_index(drop=True)
     out["rank_cleanest"] = out.index + 1
     return out
+   
+    # Sort by cleanest
+    out = out.sort_values("annual_tco2e", ascending=True).reset_index(drop=True)
+    out["rank_cleanest"] = out.index + 1
+    return out
 
+def normalize_inverse(series: pd.Series) -> pd.Series:
+    if series.max() == series.min():
+        return pd.Series([1.0] * len(series), index=series.index)
+    return 1 - ((series - series.min()) / (series.max() - series.min()))
+
+
+# --------------------------
+# LOAD DATA
+# --------------------------
+df = pd.read_csv(DATA_PATH)
 # --------------------------
 # LOAD DATA
 # --------------------------
@@ -154,6 +169,20 @@ latency_sensitivity = st.sidebar.selectbox(
 )
 
 # --------------------------
+# DECISION WEIGHTS
+# --------------------------
+st.sidebar.header("Decision Weights")
+
+carbon_weight = st.sidebar.slider("Carbon Reduction Weight (%)", 0, 100, 40)
+cost_weight = st.sidebar.slider("Shadow Cost Weight (%)", 0, 100, 25)
+latency_weight = st.sidebar.slider("Latency Weight (%)", 0, 100, 20)
+compliance_weight = st.sidebar.slider("Compliance Weight (%)", 0, 100, 15)
+
+total_weight = carbon_weight + cost_weight + latency_weight + compliance_weight
+
+if total_weight != 100:
+    st.sidebar.warning(f"Weights should add up to 100%. Current total: {total_weight}%.")
+# --------------------------
 # COMPUTE RESULTS
 # --------------------------
 # Apply provider filter
@@ -172,9 +201,40 @@ if filtered_df.empty:
 # Compute emissions
 result = compute(filtered_df, kwh_month, pue, carbon_price)
 
+# Decision scoring
+result["carbon_score"] = normalize_inverse(result["annual_tco2e"])
+result["cost_score"] = normalize_inverse(result["annual_carbon_cost_eur"])
+
+if latency_sensitivity == "Low":
+    result["latency_score"] = 1.0
+elif latency_sensitivity == "Medium":
+    result["latency_score"] = 0.7
+else:
+    result["latency_score"] = 0.4
+
+if data_residency == "EU-only":
+    result["compliance_score"] = 1.0
+else:
+    result["compliance_score"] = 0.8
+
+if total_weight == 100:
+    result["decision_score"] = (
+        result["carbon_score"] * (carbon_weight / 100)
+        + result["cost_score"] * (cost_weight / 100)
+        + result["latency_score"] * (latency_weight / 100)
+        + result["compliance_score"] * (compliance_weight / 100)
+    ) * 100
+else:
+    result["decision_score"] = None
+    
 best = result.iloc[0]
 worst = result.iloc[-1]
 
+if total_weight == 100:
+    recommended = result.sort_values("decision_score", ascending=False).iloc[0]
+else:
+    recommended = best
+    
 savings_tco2e = float(worst["annual_tco2e"] - best["annual_tco2e"])
 savings_eur = float(savings_tco2e * carbon_price)
 # Scenario carbon price impact
@@ -185,10 +245,38 @@ scenario_cost_difference = scenario_cost_worst - scenario_cost_best
 # --------------------------
 # KPI CARDS
 # --------------------------
-c1, c2, c3 = st.columns(3)
+c1, c2, c3, c4 = st.columns(4)
+
 c1.metric("Lowest-Emission Region", f"{best['region_label']}")
-c2.metric("Avoided Emissions vs Highest", f"{savings_tco2e:.2f} tCO₂e")
-c3.metric("Avoided Shadow Carbon Cost", f"€{savings_eur:,.0f}")
+c2.metric("Recommended Region", f"{recommended['region_label']}")
+c3.metric("Avoided Emissions vs Highest", f"{savings_tco2e:.2f} tCO₂e")
+
+if total_weight == 100:
+    c4.metric("Decision Score", f"{recommended['decision_score']:.1f}/100")
+else:
+    c4.metric("Decision Score", "Adjust weights")
+
+# --------------------------
+# STRATEGIC RECOMMENDATION
+# --------------------------
+st.subheader("Strategic Recommendation")
+
+if total_weight == 100:
+    st.success(
+        f"Recommended region: {recommended['region_label']} "
+        f"({recommended['provider']}) with a decision score of "
+        f"{recommended['decision_score']:.1f}/100."
+    )
+
+    if recommended["region_label"] != best["region_label"]:
+        st.info(
+            f"The lowest-emission region is {best['region_label']}, but the recommended region may provide "
+            "a better balance based on the selected decision weights and business constraints."
+        )
+else:
+    st.warning(
+        "Adjust the decision weights so they add up to 100% to generate a recommendation score."
+    )
 
 st.divider()
 
@@ -326,6 +414,11 @@ display_cols = [
     "intensity_gco2e_per_kwh",
     "annual_tco2e",
     "annual_carbon_cost_eur",
+    "carbon_score",
+    "cost_score",
+    "latency_score",
+    "compliance_score",
+    "decision_score",
 ]
 
 st.dataframe(
@@ -338,6 +431,11 @@ st.dataframe(
             "intensity_gco2e_per_kwh": "Grid Intensity (gCO₂e/kWh)",
             "annual_tco2e": "Annual Emissions (tCO₂e)",
             "annual_carbon_cost_eur": "Annual Shadow Carbon Cost (€)",
+            "carbon_score": "Carbon Score",
+            "cost_score": "Cost Score",
+            "latency_score": "Latency Score",
+            "compliance_score": "Compliance Score",
+            "decision_score": "Decision Score",
         }
     ),
     use_container_width=True
