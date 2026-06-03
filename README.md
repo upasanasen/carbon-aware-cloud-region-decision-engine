@@ -1,80 +1,71 @@
-# Carbon-Aware Cloud Deployment Decision Tool (V2)
+# Carbon-Aware Cloud Region Decision Engine
 
-A decision-support system for sustainability and cloud strategy teams to evaluate carbon-aware deployment across major cloud providers.
-
-The tool compares cloud regions using electricity grid carbon intensity, data center efficiency, and internal carbon pricing to help organizations choose lower-emission infrastructure locations.
+A Streamlit-based decision-support prototype that helps sustainability, cloud, product, and finance teams compare cloud deployment regions using estimated Scope 2 location-based emissions, PUE-adjusted energy use, internal shadow carbon pricing, and business constraints.
 
 ✅ Live app: https://carbon-aware-cloud-tool.streamlit.app
 
 ---
 
-## Why this matters
+## What This Project Does
 
-As cloud workloads grow (especially with AI), **where** you deploy can significantly change emissions because electricity grids differ by country.  
-Sustainability teams need a simple way to quantify:
+This tool helps users compare AWS, Azure, and Google Cloud regions across estimated operational carbon impact and business decision factors.
 
-- **Estimated annual emissions** per cloud region
-- **Avoided emissions** by switching to a lower-carbon region
-- **Carbon cost exposure** using an internal carbon price (€ / tCO₂e)
+Instead of only showing the lowest-emission region, the tool is being developed into a strategic recommendation engine that considers carbon intensity, workload energy use, PUE, internal shadow carbon cost, data residency, latency sensitivity, and workload flexibility.
 
-As AI workloads and cloud computing expand rapidly, the location of compute infrastructure has a significant impact on Scope 2 emissions.
-
-This tool demonstrates how sustainability teams can integrate carbon-aware decision-making into infrastructure strategy, supporting:
-
-- Internal carbon pricing
-- EU ETS cost modeling
-- ESG reporting and decarbonization planning
-- Sustainable cloud architecture
 ---
 
-## What the tool does
+## Why This Matters
+
+As cloud workloads grow, especially with AI, where a company deploys compute infrastructure can significantly affect estimated Scope 2 emissions because electricity grids differ by country.
+
+Sustainability, cloud, and finance teams need a simple way to compare:
+
+- Estimated annual Scope 2 location-based emissions per cloud region
+- Avoided emissions from selecting a lower-carbon region
+- Internal shadow carbon cost exposure
+- Trade-offs between carbon reduction, workload flexibility, latency, and data residency
+
+This project demonstrates how carbon-aware decision-making can be integrated into cloud infrastructure strategy and sustainability planning.
+
+---
+
+## What the Tool Does
 
 ### Inputs
-- Workload energy (kWh/month) — presets + custom
-- Data center efficiency (PUE)
-- Internal carbon price (€/tCO₂e)
+
+- Workload energy use in kWh/month
+- Data center efficiency using PUE
+- Internal shadow carbon price in €/tCO₂e
+- Cloud provider filter: AWS, Azure, GCP, or all providers
 
 ### Outputs
-- **Optimal region (lowest annual tCO₂e)**
-- **Annual savings vs highest-intensity region**
-- **Avoided carbon cost**
+
+- Lowest-emission region
+- Estimated annual Scope 2 location-based emissions
+- Avoided emissions vs highest-emission region
+- Estimated internal shadow carbon cost
 - Regional comparison chart
+- Interactive emissions map
+- CSV export
 
-## New in Version 2
+---
 
-- Multi-cloud comparison (AWS, Azure, GCP)
+## Current Version
+
+### Version 2: Multi-Cloud Carbon Comparison
+
+- Multi-cloud comparison across AWS, Azure, and GCP
 - Cloud provider filtering
-- Carbon price scenario analysis
-- CSV export for sustainability reporting
+- PUE-adjusted emissions calculation
+- Internal shadow carbon price scenario analysis
+- CSV export for analysis and reporting
 - Interactive emissions map across Europe
 
 ---
 
-## Methodology (v1)
+## Methodology
 
-**Annual tCO₂e** is calculated using:
-
-tCO₂e = (kWh × PUE × gCO₂e/kWh) ÷ 1,000,000
-
-- Grid intensity factors are stored in `data/regions.csv`
-- This prototype uses **generation-based** grid intensity values (EEA, 2023)
-
----
-
-## Data sources
-
-- **EEA (European Environment Agency)** – grid emission intensity indicator (2023 averages)
-- Region list is mapped to AWS EU regions for comparison
-
----
-
-## Repo structure
+Estimated annual emissions are calculated using:
 
 ```text
-.
-├── app/
-│   └── app.py
-├── data/
-│   └── regions.csv
-├── requirements.txt
-└── README.md
+Annual tCO₂e = (Monthly kWh × 12 × PUE × grid intensity gCO₂e/kWh) ÷ 1,000,000
