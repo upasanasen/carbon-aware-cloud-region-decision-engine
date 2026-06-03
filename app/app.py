@@ -29,6 +29,17 @@ WORKLOAD_PRESETS = {
     "ML Inference": 8000.0,
     "Custom": 1000.0
 }
+EU_COUNTRIES = [
+    "Sweden",
+    "France",
+    "Ireland",
+    "Germany",
+    "Italy",
+    "Netherlands",
+    "Finland",
+    "Belgium"
+]
+
 
 # --------------------------
 # FUNCTIONS
@@ -151,8 +162,11 @@ filtered_df = df.copy()
 if provider_filter != "All":
     filtered_df = filtered_df[filtered_df["provider"] == provider_filter]
 
+if data_residency == "EU-only":
+    filtered_df = filtered_df[filtered_df["country"].isin(EU_COUNTRIES)]
+
 if filtered_df.empty:
-    st.error("No regions available for the selected provider.")
+    st.error("No regions available for the selected provider and data residency requirement.")
     st.stop()
     
 # Compute emissions
