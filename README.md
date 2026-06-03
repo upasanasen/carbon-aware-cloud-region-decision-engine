@@ -85,7 +85,7 @@ This prototype estimates Scope 2 location-based operational emissions. It does n
 
 ## Data Sources
 
-- European Environment Agency electricity generation greenhouse gas intensity data
+- European Environment Agency (EEA) electricity generation greenhouse gas intensity data
 - Cloud region-country mapping for AWS, Azure, and Google Cloud European regions
 - Region data stored in `data/regions.csv`
 
@@ -102,3 +102,44 @@ This prototype estimates Scope 2 location-based operational emissions. It does n
 ├── docs/
 ├── requirements.txt
 └── README.md
+
+```
+---
+
+## Current Limitations
+
+This project is a strategic screening prototype, not a full cloud carbon accounting platform.
+
+It does not currently include:
+
+- Real-time hourly carbon intensity data
+- Provider-specific renewable energy procurement claims
+- Market-based Scope 2 accounting
+- Actual cloud pricing
+- Actual latency benchmarking
+- Service availability by cloud region
+- Scope 3 embodied emissions from hardware or data center construction
+
+---
+
+## Roadmap
+
+### Version 3: Strategic Decision Engine
+
+Planned upgrades:
+
+- Workload type selection
+- Data residency filter
+- Latency sensitivity input
+- Weighted decision scoring
+- Strategic recommendation output
+- Business trade-off explanation
+
+### Version 4: Advanced Carbon-Aware Scheduling
+
+Future upgrades:
+
+- Hourly carbon intensity API integration
+- Carbon-aware workload shifting
+- Scenario comparison
+- Exportable decision report
