@@ -41,9 +41,13 @@ This project demonstrates how carbon-aware decision-making can be integrated int
 ### Outputs
 
 - Lowest-emission region
+- Recommended region based on weighted decision score
+- Decision score
 - Estimated annual Scope 2 location-based emissions
 - Avoided emissions vs highest-emission region
 - Estimated internal shadow carbon cost
+- Strategic recommendation
+- Strategic decision notes
 - Regional comparison chart
 - Interactive emissions map
 - CSV export
@@ -52,12 +56,28 @@ This project demonstrates how carbon-aware decision-making can be integrated int
 
 ## Current Version
 
-### Version 2: Multi-Cloud Carbon Comparison
+### Version 3: Weighted Cloud Region Decision Engine
+
+This version expands the tool from a carbon comparison calculator into a multi-criteria decision-support engine.
+
+New capabilities include:
 
 - Multi-cloud comparison across AWS, Azure, and GCP
-- Cloud provider filtering
-- PUE-adjusted emissions calculation
+- Scope 2 location-based emissions estimation
+- PUE-adjusted workload energy calculation
 - Internal shadow carbon price scenario analysis
+- Business constraint inputs:
+  - workload type
+  - data residency requirement
+  - latency sensitivity
+- Weighted decision scoring across:
+  - carbon reduction
+  - shadow carbon cost
+  - latency
+  - compliance
+- Recommended region output
+- Strategic recommendation section
+- Strategic decision notes
 - CSV export for analysis and reporting
 - Interactive emissions map across Europe
 
@@ -124,22 +144,13 @@ It does not currently include:
 
 ## Roadmap
 
-### Version 3: Strategic Decision Engine
-
-Planned upgrades:
-
-- Workload type selection
-- Data residency filter
-- Latency sensitivity input
-- Weighted decision scoring
-- Strategic recommendation output
-- Business trade-off explanation
-
 ### Version 4: Advanced Carbon-Aware Scheduling
 
-Future upgrades:
+Planned upgrades:
 
 - Hourly carbon intensity API integration
 - Carbon-aware workload shifting
 - Scenario comparison
 - Exportable decision report
+- Service availability notes by cloud provider
+- More European and non-European cloud regions
