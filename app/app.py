@@ -109,6 +109,39 @@ scenario_carbon_price = st.sidebar.slider(
     value=150.0,
     step=10.0
 )
+
+# --------------------------
+# BUSINESS CONSTRAINTS
+# --------------------------
+st.sidebar.header("Business Constraints")
+
+workload_type = st.sidebar.selectbox(
+    "Workload Type",
+    [
+        "Batch / AI Training",
+        "Analytics Pipeline",
+        "User-Facing App",
+        "Critical Production System"
+    ]
+)
+
+data_residency = st.sidebar.selectbox(
+    "Data Residency Requirement",
+    [
+        "EU-only",
+        "Flexible"
+    ]
+)
+
+latency_sensitivity = st.sidebar.selectbox(
+    "Latency Sensitivity",
+    [
+        "Low",
+        "Medium",
+        "High"
+    ]
+)
+
 # --------------------------
 # COMPUTE RESULTS
 # --------------------------
