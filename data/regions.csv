@@ -12,3 +12,9 @@ GCP,europe-north1,Finland (europe-north1),Finland,67,2023,generation-based,EEA,h
 GCP,europe-west1,Belgium (europe-west1),Belgium,153,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,50.8503,4.3517
 GCP,europe-west3,Frankfurt (europe-west3),Germany,385,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,50.1109,8.6821
 GCP,europe-west4,Netherlands (europe-west4),Netherlands,180,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,52.3676,4.9041
+Azure,francecentral,France Central,France,55,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,48.8566,2.3522
+Azure,italynorth,Italy North,Italy,230,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,45.4642,9.1900
+GCP,europe-west8,Milan (europe-west8),Italy,230,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,45.4642,9.1900
+GCP,europe-west9,Paris (europe-west9),France,55,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,48.8566,2.3522
+GCP,europe-west10,Berlin (europe-west10),Germany,385,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,52.5200,13.4050
+GCP,europe-west12,Turin (europe-west12),Italy,230,2023,generation-based,EEA,https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1,45.0703,7.6869
