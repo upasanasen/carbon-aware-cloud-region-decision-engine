@@ -6,7 +6,10 @@ from pathlib import Path
 # --------------------------
 # PAGE CONFIG
 # --------------------------
-st.set_page_config(page_title="Carbon-Aware Cloud Decision Tool (v1)", layout="wide")
+st.set_page_config(
+    page_title="Carbon-Aware Cloud Region Decision Engine",
+    layout="wide"
+)
 
 # --------------------------
 # PATHS
@@ -58,8 +61,11 @@ df["longitude"] = pd.to_numeric(df["longitude"], errors="coerce")
 # --------------------------
 # HEADER
 # --------------------------
-st.title("Carbon-Aware Cloud Deployment Strategy Tool")
-st.caption("Multi-cloud decision-support system for evaluating carbon-aware cloud infrastructure strategies.")
+st.title("Carbon-Aware Cloud Region Decision Engine")
+st.caption(
+    "Decision-support prototype for comparing cloud regions using Scope 2 location-based emissions, "
+    "PUE-adjusted energy use, internal shadow carbon pricing, and business constraints."
+)
 
 # --------------------------
 # SIDEBAR INPUTS
@@ -129,9 +135,9 @@ scenario_cost_difference = scenario_cost_worst - scenario_cost_best
 # KPI CARDS
 # --------------------------
 c1, c2, c3 = st.columns(3)
-c1.metric("Optimal Region", f"{best['region_label']}")
-c2.metric("Annual Savings (vs highest)", f"{savings_tco2e:.2f} tCO₂e")
-c3.metric("Avoided Carbon Cost", f"€{savings_eur:,.0f}")
+c1.metric("Lowest-Emission Region", f"{best['region_label']}")
+c2.metric("Avoided Emissions vs Highest", f"{savings_tco2e:.2f} tCO₂e")
+c3.metric("Avoided Shadow Carbon Cost", f"€{savings_eur:,.0f}")
 
 st.divider()
 # -------------------------------
@@ -230,12 +236,12 @@ st.dataframe(
     result[display_cols].rename(
         columns={
             "rank_cleanest": "Rank",
-            "region_id": "AWS Region",
+            "region_id": "Cloud Region",
             "region_label": "Region Label",
             "country": "Country",
             "intensity_gco2e_per_kwh": "Grid Intensity (gCO₂e/kWh)",
             "annual_tco2e": "Annual Emissions (tCO₂e)",
-            "annual_carbon_cost_eur": "Annual Carbon Cost (€)",
+            "annual_carbon_cost_eur": "Annual Shadow Carbon Cost (€)",
         }
     ),
     use_container_width=True
@@ -254,17 +260,34 @@ st.download_button(
 # --------------------------
 # METHODOLOGY
 # --------------------------
-with st.expander("Methodology & Assumptions"):
-    st.write(
+with st.expander("Methodology, Boundary & Limitations"):
+    st.markdown(
         """
-**Scope:** Scope 2 location-based emissions estimation for cloud region selection.
+**Emissions boundary:**  
+This tool estimates Scope 2 location-based operational emissions from cloud workload electricity use.
 
-**Formula:**
-- Annual tCO₂e = (Monthly kWh × 12 × PUE × grid intensity) / 1,000,000
+**Formula:**  
+Annual tCO₂e = (Monthly kWh × 12 × PUE × grid intensity) / 1,000,000
 
-**Notes:**
-- Grid intensity values are annual country averages (EEA 2023) mapped to AWS regions.
-- PUE is configurable to reflect data center efficiency assumptions.
-- Carbon price is an internal “shadow price” scenario tool (€/tCO₂e).
+**What is included:**  
+- Workload electricity use
+- PUE-adjusted data center energy use
+- Country-level grid carbon intensity
+- Internal shadow carbon price
+
+**What is excluded:**  
+- Scope 1 backup generator emissions
+- Scope 3 embodied emissions from servers and data center construction
+- Provider-specific renewable energy contracts
+- Market-based Scope 2 claims
+- Real-time 24/7 carbon-free energy matching
+- Actual latency benchmarking
+- Actual cloud service pricing
+
+**Data note:**  
+Grid intensity values are annual country averages mapped to AWS, Azure, and GCP European cloud regions.
+
+**Use case:**  
+This is a strategic screening prototype, not a full cloud carbon accounting platform.
         """
     )
