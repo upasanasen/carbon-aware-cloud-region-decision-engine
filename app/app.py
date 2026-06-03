@@ -191,6 +191,51 @@ c2.metric("Avoided Emissions vs Highest", f"{savings_tco2e:.2f} tCO₂e")
 c3.metric("Avoided Shadow Carbon Cost", f"€{savings_eur:,.0f}")
 
 st.divider()
+
+# --------------------------
+# STRATEGIC DECISION NOTES
+# --------------------------
+st.subheader("Strategic Decision Notes")
+
+if workload_type == "Batch / AI Training":
+    st.success(
+        "This workload is highly flexible. It is a strong candidate for carbon-aware region selection, "
+        "because batch and AI training jobs can often be shifted to lower-carbon regions if service availability and compliance requirements are met."
+    )
+elif workload_type == "Analytics Pipeline":
+    st.info(
+        "This workload has moderate flexibility. Carbon-aware region selection may be practical, especially if the pipeline does not require real-time processing."
+    )
+elif workload_type == "User-Facing App":
+    st.warning(
+        "This workload may be latency-sensitive. The lowest-emission region should not be selected without checking user location, response time, and service availability."
+    )
+else:
+    st.warning(
+        "This is a critical production workload. Carbon impact should be balanced with resilience, latency, availability zones, failover design, and service availability."
+    )
+
+if latency_sensitivity == "High":
+    st.warning(
+        "High latency sensitivity selected: carbon reduction should be balanced carefully against user experience and response-time requirements."
+    )
+elif latency_sensitivity == "Medium":
+    st.info(
+        "Medium latency sensitivity selected: a balanced region choice may be more appropriate than choosing only the lowest-emission region."
+    )
+else:
+    st.success(
+        "Low latency sensitivity selected: this workload may be suitable for stronger carbon-aware placement."
+    )
+
+if data_residency == "EU-only":
+    st.info(
+        "EU-only data residency selected: the region comparison is filtered to EU countries in the dataset."
+    )
+else:
+    st.info(
+        "Flexible data residency selected: future versions can compare both EU and non-EU regions when added to the dataset."
+    )
 # -------------------------------
 # Carbon Price Scenario Impact
 # -------------------------------
